@@ -14,6 +14,9 @@ public class EnemyAttack : MonoBehaviour
     private Vector3 velocity;
     private bool alreadyAttacked = false;
     private Player playerHealth;
+    public GameObject weapon;
+    public Transform weaponPoint;
+    private GameObject equippedWeapon;
 
     void Start()
     {
@@ -21,6 +24,7 @@ public class EnemyAttack : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerHealth = player.GetComponent<Player>();
+        EquipWeapon();
     }
 
     // Update is called once per frame
@@ -78,5 +82,13 @@ public class EnemyAttack : MonoBehaviour
     void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+
+    void EquipWeapon()
+    {
+        equippedWeapon = Instantiate(weapon, weaponPoint.position, weaponPoint.rotation);
+        equippedWeapon.transform.SetParent(weaponPoint);  // Hacemos que el arma sea hija del transform del punto
+        equippedWeapon.transform.localPosition = Vector3.zero;  // Ajustamos la posición
+        equippedWeapon.transform.localRotation = Quaternion.identity;  // Ajustamos la rotación
     }
 }

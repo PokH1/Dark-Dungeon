@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    public GameObject boss;
     public Transform[] spawnPoints;
     public int maxEnemies = 10;
     public int enemiesPerWave = 5;
@@ -13,6 +14,7 @@ public class EnemySpawner : MonoBehaviour
 
     private List<GameObject> currentEnemies = new List<GameObject>();
     private int waveNumber = 0;
+    private bool bossSpawned = false; // ✅ Nueva bandera
 
     void Start()
     {
@@ -27,7 +29,13 @@ public class EnemySpawner : MonoBehaviour
             Debug.Log("Oleada: " + waveNumber);
             int enemiesSpawnedThisWave = 0;
 
-            // Generar enemigos hasta completar la cantidad en la oleada
+            // ✅ Invocar jefe SOLO en la segunda oleada
+            if (waveNumber == 2 && !bossSpawned)
+            {
+                SpawnBoss();
+                bossSpawned = true;
+            }
+
             while (enemiesSpawnedThisWave < enemiesPerWave)
             {
                 if (currentEnemies.Count < maxEnemies)
@@ -41,7 +49,7 @@ public class EnemySpawner : MonoBehaviour
 
             // Esperar hasta que no queden enemigos
             yield return StartCoroutine(WaitForNoEnemies());
-            
+
             // Esperar el tiempo entre oleadas antes de iniciar la siguiente
             yield return new WaitForSeconds(tiemBetweenWaves);
         }
@@ -54,13 +62,11 @@ public class EnemySpawner : MonoBehaviour
         int randomIndex = Random.Range(0, spawnPoints.Length);
         Transform spawnPoint = spawnPoints[randomIndex];
 
-        // Por defecto, usa la posición del spawnPoint
         Vector3 spawnPosition = spawnPoint.position;
 
-        // Ajustar con un raycast hacia abajo para encontrar el suelo
         if (Physics.Raycast(spawnPoint.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f))
         {
-            spawnPosition = hit.point; // coloca al enemigo justo sobre el suelo
+            spawnPosition = hit.point;
         }
         else
         {
@@ -69,17 +75,54 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         currentEnemies.Add(newEnemy);
+
+        // Aumento de vida por oleada
+
+        EnemyHealth healthScript = newEnemy.GetComponent<EnemyHealth>();
+        if (healthScript != null)
+        {
+            int newHealth = 100 + (waveNumber - 1) * 25;
+            healthScript.maxHealt = newHealth;
+            healthScript.currentHealt = newHealth;
+            Debug.Log("La nueva vida es: " + newHealth);
+        }
+
+        // Aumento de daño por oleada
+        EnemyAttack attackScript = newEnemy.GetComponent<EnemyAttack>();
+        if (attackScript != null)
+        {
+            int newDamage = 10 + (waveNumber - 1) * 5;
+            attackScript.damage = newDamage;
+            Debug.Log("La nueva vida es: " + newDamage);
+        }
     }
 
-    // Coroutine para esperar hasta que no haya enemigos vivos
+    void SpawnBoss()
+    {
+        int randomIndex = Random.Range(0, spawnPoints.Length);
+        Transform spawnPoint = spawnPoints[randomIndex];
+
+        Vector3 spawnPosition = spawnPoint.position;
+
+        if (Physics.Raycast(spawnPoint.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f))
+        {
+            spawnPosition = hit.point;
+        }
+
+        GameObject bossSpawn = Instantiate(boss, spawnPosition, Quaternion.identity);
+        currentEnemies.Add(bossSpawn);
+
+        bossSpawn.SetActive(true);
+
+        Debug.Log("⚠️ Jefe (Dragón) Invocado en la Oleada 2!");
+    }
+
     IEnumerator WaitForNoEnemies()
     {
-        // Esperar hasta que no haya enemigos activos
         while (currentEnemies.Count > 0)
         {
-            // Eliminar enemigos que han sido destruidos
             currentEnemies.RemoveAll(e => e == null);
-            yield return null; // Esperar un frame y revisar nuevamente
+            yield return null;
         }
     }
 }

@@ -856,7 +856,7 @@ SkinnedMeshRenderer:
   - {fileID: 8501089020354330925}
   - {fileID: 1779581293460136310}
   m_BlendShapeWeights: []
-  m_RootBone: {fileID: 6532866782323413492}
+  m_RootBone: {fileID: 2966845482879777061}
   m_AABB:
     m_Center: {x: -0.012146652, y: 0.1638501, z: 1.3190616}
     m_Extent: {x: 0.28796753, y: 0.030527323, z: 0.31646502}
@@ -2077,7 +2077,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: cafb561f6f3432f41b21f467b9b68bee, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 1
@@ -2148,6 +2148,8 @@ MonoBehaviour:
   attackRange: 0.5
   timeBetweenAttacks: 1.5
   damage: 10
+  weapon: {fileID: 1845237839428460, guid: ab8ac2017bc4c9e40b484324e5ee20e7, type: 3}
+  weaponPoint: {fileID: 2966845482879777061}
 --- !u!114 &4947425189529003063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2161,6 +2163,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealt: 100
+  currentHealt: 0
+  weaponPickups:
+  - {fileID: 6019056078902383881, guid: 36ae19d005d95f34899567acdd5f0811, type: 3}
+  - {fileID: 787353469372186077, guid: ac88dd39fec9e3847835b0b7ee1cdde9, type: 3}
+  weaponPrefabs:
+  - {fileID: 6019056078902383881, guid: 36ae19d005d95f34899567acdd5f0811, type: 3}
+  - {fileID: 787353469372186077, guid: ac88dd39fec9e3847835b0b7ee1cdde9, type: 3}
+  powerUpDrops:
+  - {fileID: 1969629965297874410, guid: 768bc1a22d5752b49ad13e0cad7af800, type: 3}
+  - {fileID: 535932464834825308, guid: d646ae1627f69c748b53fc00ea6d2428, type: 3}
+  - {fileID: 4848223255070681388, guid: ec211642e526aac478c89fdd5638552e, type: 3}
+  - {fileID: 3812970083600491395, guid: fe310d6a4d8deb040bb57cc105f335c6, type: 3}
+  - {fileID: 4782840783915790401, guid: c86c612a93ae7f74a985f20d16508b3d, type: 3}
+  weaponDropChance: 1
+  poweUpDropChance: 0
 --- !u!1 &5410890289262757604
 GameObject:
   m_ObjectHideFlags: 0

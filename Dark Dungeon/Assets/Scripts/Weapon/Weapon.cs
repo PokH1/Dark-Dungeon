@@ -1,15 +1,31 @@
 using System;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Weapon : MonoBehaviour, IWeaponUI
 {
     public int damage = 20;
     private bool canDamage = false;
     private float damageMultiplier = 1f;
+    public Sprite icon; //Iconos del arma
+    public AudioClip audioClip;
+    public AudioSource audioSource;
+    public Sprite GetIcon()
+    {
+        return icon;
+    }
+
+    public void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     public void EnableDamage()
     {
         canDamage = true;
+        if (audioClip != null)
+        {
+            audioSource.PlayOneShot(audioClip);
+        }
         Debug.Log("Daño activado");
     }
 

@@ -6,6 +6,9 @@ public class CameraPlayerFP : MonoBehaviour
     public float speed = 100;
     public Transform Player;
     float rotationX = 0f;
+    public LayerMask collisionMask;
+    public float cameraRadius = 0.2f;
+    public float cameraDistance = 0.1f;
 
     void Start()
     {
@@ -35,5 +38,16 @@ public class CameraPlayerFP : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
         Player.Rotate(Vector3.up * mouseX);
+    }
+
+    void LateUpdate()
+    {
+            Vector3 origin = Player.position + Vector3.up * 1.6f; // altura de ojos
+        Vector3 direction = transform.position - origin;
+
+        if (Physics.SphereCast(origin, cameraRadius, direction.normalized, out RaycastHit hit, direction.magnitude, collisionMask))
+        {
+            transform.position = hit.point + hit.normal * cameraDistance;
+        }
     }
 }

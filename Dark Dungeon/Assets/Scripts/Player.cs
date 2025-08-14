@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +20,7 @@ public class Player : MonoBehaviour
     bool OnGround;
     public int maxHealth = 100;
     public int currentHealth;
+    public Slider healthSlider;
     private Animator animator;
     public bool isDie = false;
     public GameObject weaponPrefab;
@@ -27,8 +31,9 @@ public class Player : MonoBehaviour
     public GameObject shieldInstance;
     public GameObject shieldPrefab;
     private bool isBlocking = false;
-    public int maxShieldHealth = 10;
+    public int maxShieldHealth = 120;
     private int currentShieldHealth;
+    public Slider shieldSlider;
     public GameObject equippedWeapon;
     private float originalSpeed;
     private bool isInvincible = false;
@@ -37,22 +42,82 @@ public class Player : MonoBehaviour
     private float damageMultiplier = 1f;
     public List<GameObject> weaponInventory = new List<GameObject>();
     private int currentWeaponIndex = 0;
+    public List<WeaponSlotUI> weaponSlotUI = new List<WeaponSlotUI>();
+    public AudioSource audioSource;
+    public AudioClip damageSound; // sonido para recibir daño
+    public AudioClip deathSound; // sonido de muerte
+    public AudioClip shieldBrokenSound; // Sonido del escudo cuando se rompe
+    public AudioClip shieldHitSound; // sonido cuando el escudo recibe el daño
+    public AudioClip weaponChangeSound; // Sonido de cambio de arma
+    public int currentArrows;
+    public TMP_Text arrowCountText;
+    public GameObject arrowUI;
+    public GameObject bowPrefab;
+    public GameObject bowCrosshair;  // Asigna aquí el UI del crosshair del arco
 
     void Start()
     {
+        InitializePlayer();
+        InitializeWeapons();
+        UpdateWeaponUI(currentWeaponIndex);
+
+        if (bowCrosshair != null)
+        {
+            bowCrosshair.SetActive(IsUsingBow());
+        }
+    }
+
+    private void InitializePlayer()
+    {
         currentHealth = maxHealth;
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = currentHealth;
+
         currentShieldHealth = maxShieldHealth;
+        shieldSlider.maxValue = maxShieldHealth;
+        shieldSlider.value = currentShieldHealth;
+        shieldSlider.gameObject.SetActive(true);
+
         animator = GetComponent<Animator>();
-        GameObject initialWeapon =  EquipedWeapon();
-        weaponInventory.Add(initialWeapon);
+        originalRunSpeed = runSpeed;
+        originalWalkSpeed = walkSpeed;
 
         if (shieldPrefab != null)
             EquipShield(shieldPrefab);
-
-        originalRunSpeed = runSpeed;
-        originalWalkSpeed = walkSpeed;
+        
+        audioSource.volume = 20f;
     }
 
+    private void InitializeWeapons()
+    {
+        if (weaponPrefab != null)
+        {
+            // The initial weapon is assumed to be a weapon other than a bow.
+            EquipInitialWeapon(weaponPrefab);
+        }
+        else if (bowPrefab != null)
+        {
+            // If the initial weapon is a bow, handle it specifically.
+            EquipInitialWeapon(bowPrefab);
+        }
+    }
+
+    private void EquipInitialWeapon(GameObject initialWeaponPrefab)
+    {
+        equippedWeapon = Instantiate(initialWeaponPrefab);
+
+        weaponInventory.Add(equippedWeapon);
+        currentWeaponIndex = 0;
+
+        if (bowCrosshair != null)
+        {
+            bowCrosshair.SetActive(IsUsingBow());
+        }
+
+        // Call the regular equip method to handle all logic.
+        EquipWeaponByIndex(currentWeaponIndex);
+        UpdateWeaponUI(currentWeaponIndex);
+    }
     void Update()
     {
         for (int i = 1; i <= 5; i++)
@@ -60,6 +125,55 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(i.ToString()))
             {
                 EquipWeaponByIndex(i - 1);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            LaunchArrow bowScript = equippedWeapon?.GetComponent<LaunchArrow>();
+            if (bowScript != null)
+            {
+                bowScript.LoadArrow();
+            }
+            else
+            {
+                Debug.Log("El arma actual no es un arco");
+            }
+        }
+
+        if (!isDie)
+        {
+            // Manejo centralizado del clic izquierdo
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (IsUsingBow())
+                {
+                    LaunchArrow bowScript = equippedWeapon.GetComponent<LaunchArrow>();
+                    if (bowScript != null)
+                    {
+                        bowScript.StartCharging(); // Inicia la carga del arco
+                        animator.SetBool("isCharging", true);
+                    }
+                }
+                else
+                {
+                    animator.SetTrigger("attack");
+                }
+            }
+            
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (IsUsingBow())
+                {
+                    LaunchArrow bowScript = equippedWeapon.GetComponent<LaunchArrow>();
+                    if (bowScript != null)
+                    {
+                        animator.SetBool("isCharging", false);
+                        animator.SetTrigger("shootArrow");
+                        bowScript.ShootArrow(); // Dispara la flecha
+                        
+                    }
+                }
             }
         }
         OnGround = Physics.CheckSphere(inOnGround.position, distanceFloot, layerFloot);
@@ -102,17 +216,28 @@ public class Player : MonoBehaviour
             animator.SetBool("isRunning", false);
         }
 
-        if (Input.GetMouseButtonDown(0) && !isDie)
-        {
-            animator.SetTrigger("attack");
-        }
-
         HandleShield();
 
         if (currentShield != null)
         {
             bool shouldBeVisible = !IsUsingBow();
             currentShield.SetActive(shouldBeVisible);
+        }
+    }
+
+
+    bool IsUsingBow()
+    {
+        return equippedWeapon != null && equippedWeapon.CompareTag("Bow");
+    }
+
+    public void UpdateArrowCountUI()
+    {
+        // Esta función se llama desde LaunchArrow
+        LaunchArrow bowScript = equippedWeapon?.GetComponent<LaunchArrow>();
+        if (bowScript != null && arrowCountText != null)
+        {
+            arrowCountText.text = "X" + bowScript.cantArrows.ToString();
         }
     }
 
@@ -128,7 +253,14 @@ public class Player : MonoBehaviour
         if (isBlocking && currentShield != null)
         {
             currentShieldHealth -= amount;
+            currentShieldHealth = Mathf.Clamp(currentShieldHealth, 0, maxShieldHealth);
+            shieldSlider.value = currentShieldHealth;
             Debug.Log("El escudo recibio: " + amount + " de daño");
+
+            if (shieldHitSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(shieldHitSound);
+            }
 
             if (currentShieldHealth <= 0)
             {
@@ -138,14 +270,26 @@ public class Player : MonoBehaviour
         else
         {
             currentHealth -= amount;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            healthSlider.value = currentHealth;
+
             Debug.Log("Vida del jugador: " + currentHealth);
 
-            if (currentHealth <= 0)
+            if (currentHealth > 0)
+            {
+                if (damageSound != null && audioSource != null)
+                {
+                    Debug.Log("Reproduciendo sonido de daño");
+                    audioSource.PlayOneShot(damageSound);
+                    Debug.Log("Reproduciendo sonido de daño");
+                }
+            }
+            else
             {
                 Die();
             }
         }
-    
+
     }
 
     public void DestroyShield()
@@ -154,6 +298,11 @@ public class Player : MonoBehaviour
         if (currentShield != null)
         {
             Destroy(currentShield);
+        }
+
+        if (shieldBrokenSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shieldBrokenSound);
         }
 
         isBlocking = false;
@@ -167,10 +316,28 @@ public class Player : MonoBehaviour
         isDie = true;
         animator.SetTrigger("Die"); // si tienes animación de muerte
 
+        AnimatorStateInfo animInfo = animator.GetCurrentAnimatorStateInfo(0);
+        float deathAnimDuration = animInfo.length;
+
+        if (deathSound != null && audioSource != null)
+        {
+            Debug.Log("Reproduciendo sonido de muerte");
+            audioSource.PlayOneShot(deathSound);
+            Debug.Log("Reproduciendo sonido de muerte");
+        }
         // Aquí puedes desactivar movimiento o mostrar menú de muerte
         GetComponent<Player>().enabled = false;
         GetComponent<CharacterController>().enabled = false;
         this.enabled = false; // Desactiva el propio script
+
+        StartCoroutine(WaitForDeathAnimation(deathAnimDuration));
+    }
+
+    private IEnumerator WaitForDeathAnimation(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        FindAnyObjectByType<GameOver>().GameOverCanvas();
     }
 
     GameObject EquipedWeapon()
@@ -281,39 +448,44 @@ public class Player : MonoBehaviour
 
     public void EquipNewWeapon(GameObject newWeaponPrefab)
     {
-        if (weaponInventory.Count >= 5)
+        if (weaponInventory.Count < 5)
         {
-            Debug.Log("Inventario lleno. No puedes llevar mas armas.");
-            return;
+            // Instancia la nueva arma
+            GameObject newWeapon = Instantiate(newWeaponPrefab, weaponPoint);
+            newWeapon.SetActive(false); // Solo se activa cuando se equipa
+
+            // Agregar nueva arma al inventario
+            weaponInventory.Add(newWeapon);
+
+            Debug.Log("Arma añadida al inventario");
+
+            // Equipar automáticamente si es la única arma o se quiere auto-equipar
+            currentWeaponIndex = weaponInventory.Count - 1;
+            EquipWeaponByIndex(currentWeaponIndex);
+        }
+        else
+        {
+            Debug.LogWarning("Inventario lleno. No puedes llevar más armas.");
+            // Aquí puedes abrir tu panel de reemplazo como se mencionó antes
         }
 
-        GameObject newWeapon = Instantiate(newWeaponPrefab, weaponPoint);
-        // newWeapon.transform.localPosition = Vector3.zero;
-        // newWeapon.transform.localRotation = Quaternion.identity;
-        newWeapon.SetActive(false); // Se activará cuando se seleccione
-
-        weaponInventory.Add(newWeapon);
-        Debug.Log("Arma añadida al inventario");
-
-        if (weaponInventory.Count == 1)
-        {
-            // Equipar la primera arma automáticamente
-            EquipWeaponByIndex(0);
-        }
+        // Asegurar que la lista de UI esté sincronizada
+        UpdateWeaponUI(currentWeaponIndex);
     }
+
 
     void EquipWeaponByIndex(int index)
     {
         if (index < 0 || index >= weaponInventory.Count) return;
 
-        // Desactivar arma anterior y scripts
+        audioSource?.PlayOneShot(weaponChangeSound);
+
+        // Deactivate previous weapon
         if (equippedWeapon != null)
         {
             equippedWeapon.SetActive(false);
-
             Weapon oldWeaponScript = equippedWeapon.GetComponent<Weapon>();
             if (oldWeaponScript != null) oldWeaponScript.enabled = false;
-
             LaunchArrow oldBowScript = equippedWeapon.GetComponent<LaunchArrow>();
             if (oldBowScript != null) oldBowScript.enabled = false;
         }
@@ -321,31 +493,100 @@ public class Player : MonoBehaviour
         equippedWeapon = weaponInventory[index];
         equippedWeapon.SetActive(true);
 
-        if (equippedWeapon.CompareTag("Bow"))
+        // Handle new weapon logic
+        bool isBow = equippedWeapon.CompareTag("Bow");
+
+        if (isBow)
         {
-            LaunchArrow bowScript = equippedWeapon.GetComponent<LaunchArrow>();
-            if (bowScript != null)
-            {
-                bowScript.enabled = true;
-                weaponScript = null;
-            }
+            Vector3 originalScale = equippedWeapon.transform.localScale;
+            equippedWeapon.transform.SetParent(leftHandSlot);
+            equippedWeapon.transform.localPosition = Vector3.zero; // Ajusta según tu modelo
+            equippedWeapon.transform.localRotation = Quaternion.Euler(0f, 0f, 180);
+            equippedWeapon.transform.localScale = originalScale;
         }
         else
         {
-            Weapon newWeaponScript = equippedWeapon.GetComponent<Weapon>();
+            Vector3 originalScale = equippedWeapon.transform.localScale;
+            equippedWeapon.transform.SetParent(weaponPoint, false);
+            // equippedWeapon.transform.localPosition = Vector3.zero; // Ajusta según tu modelo
+            // equippedWeapon.transform.localRotation = Quaternion.identity; // Ajusta según tu modelo
+            equippedWeapon.transform.localScale = originalScale;
+
+        }
+
+        LaunchArrow bowScript = equippedWeapon.GetComponent<LaunchArrow>();
+        Weapon newWeaponScript = equippedWeapon.GetComponent<Weapon>();
+
+        if (isBow)
+        {
+            if (bowScript != null)
+            {
+                bowScript.enabled = true;
+                bowScript.player = this;
+                // currentArrows = bowScript.cantArrows;
+                // UpdateArrowCountUI();
+                arrowUI?.SetActive(true);
+            }
+            if (newWeaponScript != null) newWeaponScript.enabled = false;
+            weaponScript = null; // Important: Clear the reference to the melee weapon script
+        }
+        else
+        {
             if (newWeaponScript != null)
             {
                 newWeaponScript.enabled = true;
                 weaponScript = newWeaponScript;
+                weaponScript.SetDamageMultiplier(damageMultiplier);
             }
-
-            // Solo actualizas el script y el índice si NO es arco
-            currentWeaponIndex = index;
+            if (bowScript != null) bowScript.enabled = false;
+            arrowUI?.SetActive(false);
         }
 
-        Debug.Log("Arma equipada: " + equippedWeapon.name);
-    }
+        currentWeaponIndex = index;
+        UpdateWeaponUI(index);
 
+        // Handle shield visibility after equipping a weapon
+        if (currentShield != null)
+        {
+            currentShield.SetActive(!isBow);
+        }
+        
+        if (bowCrosshair != null)
+        {
+            bowCrosshair.SetActive(IsUsingBow());
+        }
+    }
+    void UpdateWeaponUI(int equippedIndex)
+    {
+        for (int i = 0; i < weaponSlotUI.Count; i++)
+        {
+            Sprite weaponIcon = null;
+
+            // Comprueba si hay un arma en el inventario para este slot.
+            if (i < weaponInventory.Count && weaponInventory[i] != null)
+            {
+                // Usa una interfaz para obtener el ícono, lo cual es más flexible.
+                IWeaponUI weaponUI = weaponInventory[i].GetComponent<IWeaponUI>();
+                if (weaponUI != null)
+                {
+                    weaponIcon = weaponUI.GetIcon();
+                }
+            }
+
+            if (weaponIcon == null && weaponSlotUI[i].emptyIcon != null)
+            {
+                weaponIcon = weaponSlotUI[i].emptyIcon;
+            }
+            
+            // Llama a la función del slot de UI con el ícono.
+            // Si no se encontró un arma, weaponIcon será null, y el script del slot 
+            // se encargará de mostrar el emptyIcon.
+            weaponSlotUI[i].SetWeaponIcon(weaponIcon);
+
+            // Resalta el slot si es el arma equipada.
+            weaponSlotUI[i].SetHighlight(i == equippedIndex);
+        }
+    }
 
     public void EquipShield(GameObject shieldPrefab)
     {
@@ -361,6 +602,8 @@ public class Player : MonoBehaviour
         currentShield.SetActive(true);
 
         currentShieldHealth = maxShieldHealth;
+        shieldSlider.maxValue = maxShieldHealth;
+        shieldSlider.value = currentShieldHealth;
     }
 
     void HandleShield()
@@ -381,10 +624,6 @@ public class Player : MonoBehaviour
         {
             ActivateShield(false);
         }
-    }
-    bool IsUsingBow()
-    {
-        return equippedWeapon != null && equippedWeapon.CompareTag("Bow");
     }
 
     void ActivateShield(bool active)

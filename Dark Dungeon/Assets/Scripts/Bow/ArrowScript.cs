@@ -4,15 +4,15 @@ using UnityEngine;
 public class ArrowScript : MonoBehaviour
 {
     public int damage;
-    public GameObject plusArrow;
     public bool arrowInFly;
 
     Quaternion rotate;
     public float powerFinal;
+    public LaunchArrow launchArrowScript;
 
     void Start()
     {
-        plusArrow = GameObject.FindGameObjectWithTag("Bow");
+        // plusArrow = GameObject.FindGameObjectWithTag("Bow");
         arrowInFly = false;
         rotate = Quaternion.Euler(90, 0, 0);
     }
@@ -24,12 +24,13 @@ private void Update()
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null && rb.linearVelocity.magnitude > 0.1f)
         {
-                transform.right = rb.linearVelocity.normalized;
+            transform.right = -rb.linearVelocity.normalized;
         }
     }
 }
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log($"Flecha colisionó con: {collision.gameObject.name} - Tag: {collision.gameObject.tag}");
         if (!arrowInFly) return; // Evita múltiples colisiones
 
         arrowInFly = false;
@@ -63,10 +64,23 @@ private void Update()
         StartCoroutine(DestructionTime());
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!arrowInFly && other.CompareTag("Player"))
+        {
+            ArrowGet();
+        }
+    }
+
     public void ArrowGet()
     {
-        plusArrow.GetComponent<LaunchArrow>().cantArrows += 1;
-        Destroy(gameObject);
+        if (launchArrowScript != null)
+        {
+            launchArrowScript.AddArrows(1);
+            Debug.Log("Flecha recogida por el jugador");
+            Destroy(gameObject);
+        }
+
     }
 
     IEnumerator DestructionTime()

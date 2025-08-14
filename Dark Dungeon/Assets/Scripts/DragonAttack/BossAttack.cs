@@ -22,6 +22,11 @@ public class BossAttack : MonoBehaviour
     private Player playerHealth;
     public float structureDestructionRadius = 1.5f;
     public LayerMask destructionLayer;
+    public bool canStartAttacking = false;
+    public AudioSource roarAudioSource;
+    private bool hasPlayedBattleStance = false;
+    public AudioSource flyingAudioSource;
+    public AudioSource fireballLaunchAudioSource;
 
     void Start()
     {
@@ -29,12 +34,51 @@ public class BossAttack : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerHealth = player.GetComponent<Player>();
-        animator.SetTrigger("BattleStance");
+        // animator.SetTrigger("BattleStance");
+    }
+
+    IEnumerator PlayRoarDuringBattleStance()
+    {
+        if (roarAudioSource != null)
+            roarAudioSource.Play();
+
+        // Esperar la duración exacta del clip "BattleStance"
+        float duration = GetAnimationClipLength("BattleStance");
+
+        yield return new WaitForSeconds(duration);
+
+        if (roarAudioSource != null)
+            roarAudioSource.Stop();
+
+        canStartAttacking = true;
+    }
+
+    float GetAnimationClipLength(string clipName)
+    {
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == clipName)
+                return clip.length;
+        }
+        // Por si no encuentra el clip
+        Debug.LogWarning("No se encontró el clip de animación: " + clipName);
+        return 1f; // valor por defecto
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!canStartAttacking)
+        {
+            if (!hasPlayedBattleStance)
+            {
+                animator.SetTrigger("BattleStance");
+                StartCoroutine(PlayRoarDuringBattleStance());
+                hasPlayedBattleStance = true;
+            }
+            return;
+        }
+
         if (playerHealth == null || playerHealth.isDie)
         {
             animator.SetTrigger("IdleAgressive");
@@ -77,6 +121,16 @@ public class BossAttack : MonoBehaviour
     {
         animator.SetTrigger("FlyingAttack"); // Aquí puedes añadir una animación de lanzar la bola de fuego
         LaunchFireball();
+
+        if (flyingAudioSource != null)
+        {
+            flyingAudioSource.Play();
+        }
+
+        if (fireballLaunchAudioSource != null)
+        {
+            fireballLaunchAudioSource.Play();
+        }
 
         canAttackWithFireball = false;
         alreadyAttacked = true;
@@ -157,16 +211,24 @@ public class BossAttack : MonoBehaviour
     }
 
     void ChooseAttack()
-{
-    int randomAttack = Random.Range(0, 2); // 0 o 1
+    {
+        int randomAttack = Random.Range(0, 2); // 0 o 1
 
-    if (randomAttack == 0 && !alreadyAttacked)
-    {
-        AttackPlayer(); // ataque cuerpo a cuerpo
+        if (randomAttack == 0 && !alreadyAttacked)
+        {
+            AttackPlayer(); // ataque cuerpo a cuerpo
+        }
+        else if (randomAttack == 1 && canAttackWithFireball)
+        {
+            AttackWithFireball(); // ataque a distancia
+        }
     }
-    else if (randomAttack == 1 && canAttackWithFireball)
+
+    public void StopFlyingSound()
     {
-        AttackWithFireball(); // ataque a distancia
+        if (flyingAudioSource != null && flyingAudioSource.isPlaying)
+        {
+            flyingAudioSource.Stop();
+        }
     }
-}
 }

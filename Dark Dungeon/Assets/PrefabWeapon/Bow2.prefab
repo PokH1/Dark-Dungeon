@@ -67,7 +67,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 1.222, y: 0.006}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2456697359667067504
@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 1272865574948639818}
   - component: {fileID: -7610088985499882059}
   - component: {fileID: 2414216406958912748}
+  - component: {fileID: 8557634683745192623}
   m_Layer: 0
   m_Name: Bow2
   m_TagString: Bow
@@ -311,6 +312,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupUI: {fileID: 9075212079057221011}
   weaponPrefab: {fileID: 5041141859135822825}
+  pickupSound: {fileID: 8300000, guid: a9ae55f881695c84aa220c0723913617, type: 3}
+  audioSource: {fileID: 8557634683745192623}
 --- !u!114 &2414216406958912748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,9 +330,108 @@ MonoBehaviour:
   arrowPrefab: {fileID: 1606406890779091489, guid: e12634621c616bc4ba58ee92a75771c4, type: 3}
   respawnArrow: {fileID: 1807447982893105265}
   chargeArrow: {fileID: 2259650063613059640}
-  crosshairUI: {fileID: 0}
+  crosshairUI: {fileID: 6401541536571432826, guid: d93078325ed849c499642d53a863671f, type: 3}
   force: 0
   cantArrows: 15
+  icon: {fileID: 21300000, guid: 68fc7d0a98336e14ab60587306c5be39, type: 3}
+  player: {fileID: 0}
+--- !u!82 &8557634683745192623
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5041141859135822825}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7757202181907529247
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,8 +555,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 5
-  m_fontSizeBase: 5
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

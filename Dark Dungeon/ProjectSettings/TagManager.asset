@@ -7,16 +7,18 @@ TagManager:
   - Enemy
   - Structure
   - Bow
+  - Boss
+  - Arrow
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - inOnGround
   - Structure
-  - 
+  - Arrow
   - 
   - 
   - 

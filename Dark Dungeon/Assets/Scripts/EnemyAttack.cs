@@ -17,9 +17,12 @@ public class EnemyAttack : MonoBehaviour
     public GameObject weapon;
     public Transform weaponPoint;
     private GameObject equippedWeapon;
+    public AudioClip attackSound;
+    public AudioSource audioSource;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -73,6 +76,11 @@ public class EnemyAttack : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(damage);
+        }
+
+        if (attackSound != null)
+        {
+            audioSource.PlayOneShot(attackSound);
         }
 
         alreadyAttacked = true;

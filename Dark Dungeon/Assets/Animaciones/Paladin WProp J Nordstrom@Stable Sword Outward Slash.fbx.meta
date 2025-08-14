@@ -55,14 +55,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.43679577
+      - time: 0
         functionName: EnableDamage
         data: 
         objectReferenceParameter: {fileID: 5646838267933207413, guid: e8390e93b23300c4ea90ac4145ae6215, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7389957
+      - time: 0.94442207
         functionName: DisableDamage
         data: 
         objectReferenceParameter: {fileID: 5646838267933207413, guid: e8390e93b23300c4ea90ac4145ae6215, type: 3}

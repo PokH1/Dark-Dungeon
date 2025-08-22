@@ -143,6 +143,13 @@ public class EnemyHealth : MonoBehaviour
 
         animator.SetTrigger("Die");
 
+        Player player = FindObjectOfType<Player>();
+        
+        if (player != null)
+        {
+            player.EnemyDefeated();
+        }
+
         GetComponent<EnemyAttack>().enabled = false;
         GetComponent<CharacterController>().enabled = false;
 

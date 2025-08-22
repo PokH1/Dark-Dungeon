@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a16c5b91156591645a8635c8faa15761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemId: 2
   pickupUI: {fileID: 4977995836604369241}
   weaponPrefab: {fileID: 80371358528741357}
   pickupSound: {fileID: 8300000, guid: a9ae55f881695c84aa220c0723913617, type: 3}

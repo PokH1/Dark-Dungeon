@@ -4465,8 +4465,8 @@ MonoBehaviour:
   weaponsSlotsPanels: {fileID: 47716402}
   playerHealthHUD: {fileID: 2140946833}
   gamePaused: {fileID: 527759847}
-  arrowCanva: {fileID: 0}
-  waveCanva: {fileID: 0}
+  arrowCanva: {fileID: 2135286403}
+  waveCanva: {fileID: 506030578}
   gameOverMusic: {fileID: 367285115}
 --- !u!4 &367285114
 Transform:
@@ -16682,6 +16682,51 @@ MonoBehaviour:
   iconImage: {fileID: 1215099394}
   highlight: {fileID: 688451736}
   emptyIcon: {fileID: 21300000, guid: 5b7361eb20ec71246b75169739a91a1c, type: 3}
+--- !u!1 &1216507519
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1216507521}
+  - component: {fileID: 1216507520}
+  m_Layer: 0
+  m_Name: FinishRunService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1216507520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216507519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ccab85b44cb4ab4480def7203e77441, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameOverCanvas: {fileID: 1021408675}
+--- !u!4 &1216507521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216507519}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 510, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1218835242
 GameObject:
   m_ObjectHideFlags: 0
@@ -21969,6 +22014,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c304b0413ef9556488e66c7d0219944e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenu: {fileID: 0}
+  nftSelection: {fileID: 0}
 --- !u!4 &1697315126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4978247596117979599, guid: e8390e93b23300c4ea90ac4145ae6215, type: 3}
@@ -29526,3 +29573,4 @@ SceneRoots:
   - {fileID: 750081454}
   - {fileID: 120808360}
   - {fileID: 1179156733912075692}
+  - {fileID: 1216507521}

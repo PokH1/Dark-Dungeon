@@ -5,6 +5,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using AbstractionServer;
+using System.Linq;
+
+
+[Serializable]
+public class RunFinishedRequest
+{
+    public uint monsters_defeated;
+    public string[] items_found;
+    public string[] new_items_selected;
+    public ulong survival_time;
+}
 
 public class Player : MonoBehaviour
 {
@@ -55,6 +67,12 @@ public class Player : MonoBehaviour
     public GameObject bowPrefab;
     public GameObject bowCrosshair;  // Asigna aquí el UI del crosshair del arco
 
+    // === DATOS DE LA RUN ===
+    private int monstersDefeated = 0;
+    private List<ulong> itemsFound = new List<ulong>();
+    private List<ulong> newItemsSelected = new List<ulong>();
+    private float survivalTime;
+
     void Start()
     {
         InitializePlayer();
@@ -65,6 +83,7 @@ public class Player : MonoBehaviour
         {
             bowCrosshair.SetActive(IsUsingBow());
         }
+        StartRun(); // inicializamos tiempo de run
     }
 
     private void InitializePlayer()
@@ -84,7 +103,7 @@ public class Player : MonoBehaviour
 
         if (shieldPrefab != null)
             EquipShield(shieldPrefab);
-        
+
         audioSource.volume = 20f;
     }
 
@@ -118,6 +137,15 @@ public class Player : MonoBehaviour
         EquipWeaponByIndex(currentWeaponIndex);
         UpdateWeaponUI(currentWeaponIndex);
     }
+
+    private void StartRun()
+    {
+        survivalTime = Time.time;
+        monstersDefeated = 0;
+        itemsFound.Clear();
+        newItemsSelected.Clear();
+    }
+
     void Update()
     {
         for (int i = 1; i <= 5; i++)
@@ -160,7 +188,7 @@ public class Player : MonoBehaviour
                     animator.SetTrigger("attack");
                 }
             }
-            
+
             if (Input.GetMouseButtonUp(0))
             {
                 if (IsUsingBow())
@@ -171,7 +199,7 @@ public class Player : MonoBehaviour
                         animator.SetBool("isCharging", false);
                         animator.SetTrigger("shootArrow");
                         bowScript.ShootArrow(); // Dispara la flecha
-                        
+
                     }
                 }
             }
@@ -230,6 +258,17 @@ public class Player : MonoBehaviour
     {
         return equippedWeapon != null && equippedWeapon.CompareTag("Bow");
     }
+
+        // === REGISTRO DE DATOS DE LA RUN ===
+    public void EnemyDefeated() => monstersDefeated++;
+
+    public void ItemFound(ulong itemId)
+    {
+        if (!itemsFound.Contains(itemId))
+            itemsFound.Add(itemId);
+    }
+
+    public void NewItemSelected(ulong itemId) => newItemsSelected.Add(itemId);
 
     public void UpdateArrowCountUI()
     {
@@ -325,12 +364,28 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(deathSound);
             Debug.Log("Reproduciendo sonido de muerte");
         }
+
         // Aquí puedes desactivar movimiento o mostrar menú de muerte
         GetComponent<Player>().enabled = false;
         GetComponent<CharacterController>().enabled = false;
         this.enabled = false; // Desactiva el propio script
 
         StartCoroutine(WaitForDeathAnimation(deathAnimDuration));
+
+        int maxItems = 6;
+        var itemsFoundInt = itemsFound
+            .Distinct()
+            .Take(maxItems)
+            .Select(i => (int)Mathf.Min(i, int.MaxValue))
+            .ToArray();
+
+        // Mostrar en consola la cantidad y los IDs de items
+        Debug.Log("Cantidad de items encontrados: " + itemsFoundInt.Length);
+        Debug.Log("Items enviados: " + string.Join(", ", itemsFoundInt));
+        Debug.Log("Items a enviar: " + string.Join(", ", itemsFoundInt));
+
+        FindObjectOfType<AbstractionServer.FinishRunService>()
+            .OnPlayerDeath(itemsFoundInt, survivalTime, monstersDefeated);
     }
 
     private IEnumerator WaitForDeathAnimation(float waitTime)
@@ -550,7 +605,7 @@ public class Player : MonoBehaviour
         {
             currentShield.SetActive(!isBow);
         }
-        
+
         if (bowCrosshair != null)
         {
             bowCrosshair.SetActive(IsUsingBow());
@@ -577,7 +632,7 @@ public class Player : MonoBehaviour
             {
                 weaponIcon = weaponSlotUI[i].emptyIcon;
             }
-            
+
             // Llama a la función del slot de UI con el ícono.
             // Si no se encontró un arma, weaponIcon será null, y el script del slot 
             // se encargará de mostrar el emptyIcon.

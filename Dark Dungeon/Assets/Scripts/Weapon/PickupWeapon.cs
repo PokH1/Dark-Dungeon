@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PickupWeapon : MonoBehaviour
 {
+
+    public ulong itemId;
     public GameObject pickupUI;
     public GameObject weaponPrefab;
     public AudioClip pickupSound;
@@ -50,7 +52,7 @@ public class PickupWeapon : MonoBehaviour
             isPlayerNearby = true;
             player = other.GetComponent<Player>();
 
-            if (pickupUI != null && !!HasWeaponInInventory())
+            if (pickupUI != null && !HasWeaponInInventory())
             {
                 pickupUI.SetActive(true);
             }
@@ -72,6 +74,8 @@ public class PickupWeapon : MonoBehaviour
 
     private IEnumerator PickupWeaponAndDestroy()
     {
+        hasBeenPickedUp = true;
+
         // Desactiva el collider y la UI inmediatamente
         Collider col = GetComponent<Collider>();
         if (col != null)
@@ -95,9 +99,12 @@ public class PickupWeapon : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        // Equipa el arma al jugador
-        player.EquipNewWeapon(weaponPrefab);
-
+        // Agrega el item a la lista del jugador
+        if (player != null)
+        {
+            player.ItemFound(itemId); // <-- aquí es correcto
+            player.EquipNewWeapon(weaponPrefab);
+        }
         // Destruye el objeto
         Destroy(gameObject);
     }

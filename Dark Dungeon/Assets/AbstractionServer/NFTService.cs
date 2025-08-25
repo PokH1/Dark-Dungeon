@@ -9,14 +9,6 @@ using System.Collections.Generic;
 
 namespace AbstractionServer
 {
-    [System.Serializable]
-    public class NFT
-    {
-        public string id;
-        public string name;
-        public Sprite image;
-        public bool selected;
-    }
 
     public class NFTService : MonoBehaviour
     {
@@ -118,18 +110,55 @@ namespace AbstractionServer
             {
                 try
                 {
+                    Debug.Log("Respuesta del servidor: " + request.downloadHandler.text);
+
                     JObject json = JObject.Parse(request.downloadHandler.text);
 
-                    if (json["response"]?["error"]?["userDoesNotExists"] != null ||
-                        json["response"]?["nfts"] == null)
+                    // if (json["response"]?["error"]?["userDoesNotExists"] != null ||
+                    //     json["response"]?["nfts"] == null)
+                    // {
+                    //     onSuccess(new NFT[0]);
+                    //     yield break;
+                    // }
+
+                    // Validar que contractMessage existe
+                    if (json["contractMessage"] == null)
                     {
+                        Debug.LogError("contractMessage es null");
                         onSuccess(new NFT[0]);
                         yield break;
                     }
 
-                    JArray nftsArray = json["response"]["nfts"] as JArray;
-                    NFT[] nfts = nftsArray.ToObject<NFT[]>();
-                    onSuccess(nfts);
+                    JArray nftsArray = json["contractMessage"]["nfTsSelected"] as JArray;
+
+                    if (nftsArray == null)
+                    {
+                        Debug.LogError("userNFTs es null");
+                        onSuccess(new NFT[0]);
+                        yield break;
+                    }
+
+
+                    List<NFT> nfts = new List<NFT>();
+
+                    foreach (JArray item in nftsArray)
+                    {
+                        string id = item[0].ToString();
+                        JObject data = (JObject)item[1];
+
+                        NFT nft = new NFT
+                        {
+                            id = id,
+                            name = data["name"]?.ToString(),
+                            image = null,
+                            selected = true
+                        };
+
+                        nfts.Add(nft);
+                    }
+
+                    Debug.Log("NFTs seleccionados recuperados: " + nfts.Count);
+                    onSuccess(nfts.ToArray());
                 }
                 catch (JsonException ex)
                 {

@@ -2461,6 +2461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nftService: {fileID: 164499112}
   gameScene: Demo
+  nFTSelectionUI: {fileID: 731918416}
 --- !u!4 &461444927
 Transform:
   m_ObjectHideFlags: 0

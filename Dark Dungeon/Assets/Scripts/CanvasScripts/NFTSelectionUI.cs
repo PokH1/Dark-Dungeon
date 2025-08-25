@@ -75,36 +75,32 @@ public class NFTSelectionUI : MonoBehaviour
             string json = request.downloadHandler.text;
             Debug.Log("Respuesta del servidor: " + json);
 
-            // Deserializamos en NFTResponse
-            NFTResponse responseObj = JsonConvert.DeserializeObject<NFTResponse>(json);
+            // Parsear JSON
+            var jsonObj = JObject.Parse(json);
+            var userNFTsArray = jsonObj["contractMessage"]["userNFTs"] as JArray;
 
-            // Asignamos a la lista de NFTs del jugador
-            playerNFTs = responseObj.contractMessage?.userNFTs ?? new List<NFT>();
+            playerNFTs.Clear();
 
-            // Solo mostrar NFTs si hay alguno
-            if (playerNFTs.Count > 0)
+            foreach (var item in userNFTsArray)
             {
-                foreach (var nft in playerNFTs)
-                    yield return StartCoroutine(LoadImage(nft));
+                string tokenId = item[0].ToString();
+                var metadata = item[1];
 
-                DisplayNFTs();
-            }
-            else
-            {
-                Debug.Log("No hay NFTs para mostrar.");
-                // Opcional: limpiar la UI
-                foreach (var item in nftItems)
-                    Destroy(item);
-                nftItems.Clear();
+                NFT nft = new NFT
+                {
+                    id = tokenId,
+                    name = metadata["name"].ToString(),
+                    imageUrl = metadata["media"].ToString()
+                };
+
+                playerNFTs.Add(nft);
+                yield return StartCoroutine(LoadImage(nft)); // Cargar imagen
             }
 
-            // Cargamos imágenes si es necesario
-            foreach (var nft in playerNFTs)
-            {
-                yield return StartCoroutine(LoadImage(nft));
-            }
+            DisplayNFTs();
         }
     }
+
 
 
     IEnumerator LoadImage(NFT nft)

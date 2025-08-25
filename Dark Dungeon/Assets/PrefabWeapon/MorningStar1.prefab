@@ -419,6 +419,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemId: 4
+  isNFT: 1
   pickupUI: {fileID: 2140283994442806494}
   weaponPrefab: {fileID: 6019056078902383881}
   pickupSound: {fileID: 8300000, guid: a9ae55f881695c84aa220c0723913617, type: 3}

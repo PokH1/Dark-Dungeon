@@ -7,6 +7,15 @@ using Newtonsoft;
 
 namespace AbstractionServer
 {
+
+    [System.Serializable]
+    public class NFT
+    {
+        public string id;
+        public string name;
+        public Sprite image;
+        public bool selected;
+    }
     
     public static class AbstractionApiClient
     {

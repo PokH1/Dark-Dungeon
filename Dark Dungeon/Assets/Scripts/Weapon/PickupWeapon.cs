@@ -5,6 +5,7 @@ public class PickupWeapon : MonoBehaviour
 {
 
     public ulong itemId;
+    public bool isNFT;
     public GameObject pickupUI;
     public GameObject weaponPrefab;
     public AudioClip pickupSound;
@@ -67,7 +68,7 @@ public class PickupWeapon : MonoBehaviour
             player = null;
             if (pickupUI != null)
             {
-                pickupUI.SetActive(true);
+                pickupUI.SetActive(false);
             }
         }
     }
@@ -102,7 +103,12 @@ public class PickupWeapon : MonoBehaviour
         // Agrega el item a la lista del jugador
         if (player != null)
         {
-            player.ItemFound(itemId); // <-- aquí es correcto
+            if (isNFT)
+            {
+                Debug.Log("NFT agregado con ID: " + itemId);
+                player.ItemFound(itemId); // <-- aquí es correcto                
+            }
+
             player.EquipNewWeapon(weaponPrefab);
         }
         // Destruye el objeto

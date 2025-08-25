@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace AbstractionServer
 {
@@ -10,39 +12,37 @@ namespace AbstractionServer
         
         public NFTService nftService;
         public string gameScene = "Demo";
+        public NFTSelectionUI nFTSelectionUI;
 
         private void Awake()
-            {
-                nftService = GetComponent<NFTService>();
-            }
+        {
+            nftService = GetComponent<NFTService>();
+            if (nFTSelectionUI == null)
+                nFTSelectionUI = FindObjectOfType<NFTSelectionUI>();
+        }
 
         public void StartRun()
         {
-            StartCoroutine(StartRunCoroutine());
-        }
 
-        private IEnumerator StartRunCoroutine()
-        {
-
-            yield return StartCoroutine(
-                nftService.NFTsSelectedByUser(selectedNFTs =>
-                {
-                    if (selectedNFTs == null || selectedNFTs.Length == 0)
+            List<NFT> selectedNFTs = nFTSelectionUI.GetSelectedNFTs()
+                    .Select(n => new AbstractionServer.NFT
                     {
-                        selectedNFTs = new NFT[0];
-                    }
+                        id = n.id,
+                        name = n.name,
+                        image = n.image,
+                        selected = n.selected
+                    }).ToList();
 
-                    Debug.Log("NFTs seleccionados recuperados: " + selectedNFTs.Length);
-                    string[] nftIds = new string[selectedNFTs.Length];
-                    for (int i = 0; i < selectedNFTs.Length; i++)
-                        nftIds[i] = selectedNFTs[i].id;
+            if (selectedNFTs.Count == 0)
+            {
+                Debug.LogWarning("No se han seleccionado NFTs.");
+                // return;
+            }
 
 
-                    object[] callArgumentsWrapper = new object[]
-                    {
-                        // AbstractionApiClient.userId,
-                        nftIds
-                    };
+                    object[] callArgumentsWrapper = selectedNFTs
+                        .Select(n => (object)n.id)
+                        .ToArray();
 
                     StartCoroutine(
                         AbstractionApiClient.PostArray(
@@ -60,30 +60,26 @@ namespace AbstractionServer
                             }
                         )
                     );
-                }, error =>
-                {
-                    Debug.LogError("No se pudieron recuperar los NFTs: " + error);
-                })
-            );
-        }
+                }
+        
 
         private IEnumerator RefreshTokenAndRetry()
-        {
-            yield return StartCoroutine(
-                AbstractionApiClient.Post<object, string>(
-                    "/auth/refresh",
-                    new object[] { },
-                    refreshResponse =>
-                    {
-                        Debug.Log("Refresh completado: " + refreshResponse);
-                        StartCoroutine(StartRunCoroutine());
-                    },
-                    refreshError =>
-                    {
-                        Debug.LogError("Error al refrescar el token: " + refreshError);
-                    }
-                )
-            );
-        }
+{
+    yield return StartCoroutine(
+        AbstractionApiClient.Post<object, string>(
+            "/auth/refresh",
+            new object[] { },
+            refreshResponse =>
+            {
+                Debug.Log("Refresh completado: " + refreshResponse);
+                StartRun();
+            },
+            refreshError =>
+            {
+                Debug.LogError("Error al refrescar el token: " + refreshError);
+            }
+        )
+    );
+}
     }
 }

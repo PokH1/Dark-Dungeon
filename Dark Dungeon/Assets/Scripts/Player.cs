@@ -72,6 +72,9 @@ public class Player : MonoBehaviour
     private List<ulong> itemsFound = new List<ulong>();
     private List<ulong> newItemsSelected = new List<ulong>();
     private float survivalTime;
+    // Lista temporal solo para los NFTs de esta run
+    private List<ulong> itemsToSend = new List<ulong>();
+
 
     void Start()
     {
@@ -264,8 +267,10 @@ public class Player : MonoBehaviour
 
     public void ItemFound(ulong itemId)
     {
-        if (!itemsFound.Contains(itemId))
-            itemsFound.Add(itemId);
+        if (!itemsToSend.Contains(itemId))
+            itemsToSend.Add(itemId);
+
+        Debug.Log("NFT recogido y listo para enviar: " + itemId);
     }
 
     public void NewItemSelected(ulong itemId) => newItemsSelected.Add(itemId);
@@ -373,10 +378,10 @@ public class Player : MonoBehaviour
         StartCoroutine(WaitForDeathAnimation(deathAnimDuration));
 
         int maxItems = 6;
-        var itemsFoundInt = itemsFound
+        var itemsFoundInt = itemsToSend
             .Distinct()
-            .Take(maxItems)
             .Select(i => (int)Mathf.Min(i, int.MaxValue))
+            .Take(maxItems)
             .ToArray();
 
         // Mostrar en consola la cantidad y los IDs de items
@@ -386,6 +391,8 @@ public class Player : MonoBehaviour
 
         FindObjectOfType<AbstractionServer.FinishRunService>()
             .OnPlayerDeath(itemsFoundInt, survivalTime, monstersDefeated);
+
+        itemsToSend.Clear();
     }
 
     private IEnumerator WaitForDeathAnimation(float waitTime)

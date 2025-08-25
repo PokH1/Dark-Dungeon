@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour, IWeaponUI
 {
+    public string weaponName;
     public int damage = 20;
     private bool canDamage = false;
     private float damageMultiplier = 1f;

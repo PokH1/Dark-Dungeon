@@ -2168,9 +2168,11 @@ MonoBehaviour:
   maxHealt: 10
   currentHealt: 0
   weaponPickups:
-  - {fileID: 6019056078902383881, guid: c597e70b5331bd04688588340b963ea4, type: 3}
+  - {fileID: 787353469372186077, guid: cfb04a480c8982b4a824f8f07ff43bb9, type: 3}
+  - {fileID: 9007789330970482604, guid: efa36b2d34fc22e49b9debab3722e9e3, type: 3}
   weaponPrefabs:
-  - {fileID: 6019056078902383881, guid: c597e70b5331bd04688588340b963ea4, type: 3}
+  - {fileID: 787353469372186077, guid: cfb04a480c8982b4a824f8f07ff43bb9, type: 3}
+  - {fileID: 9007789330970482604, guid: efa36b2d34fc22e49b9debab3722e9e3, type: 3}
   powerUpDrops:
   - {fileID: 1969629965297874410, guid: 768bc1a22d5752b49ad13e0cad7af800, type: 3}
   - {fileID: 535932464834825308, guid: d646ae1627f69c748b53fc00ea6d2428, type: 3}

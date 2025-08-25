@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
+using NFTType = AbstractionServer.NFT;
 
 namespace AbstractionServer
 {
@@ -24,8 +25,8 @@ namespace AbstractionServer
         public void StartRun()
         {
 
-            List<NFT> selectedNFTs = nFTSelectionUI.GetSelectedNFTs()
-                    .Select(n => new AbstractionServer.NFT
+            List<NFTType> selectedNFTs = nFTSelectionUI.GetSelectedNFTs()
+                    .Select(n => new NFTType
                     {
                         id = n.id,
                         name = n.name,
@@ -39,8 +40,13 @@ namespace AbstractionServer
                 // return;
             }
 
+            Debug.Log("IDs de armas que se enviarán a StartRun:");
+            foreach (var nft in selectedNFTs)
+            {
+                Debug.Log("NFT ID: " + nft.id + " | Name: " + nft.name);
+            }
 
-                    object[] callArgumentsWrapper = selectedNFTs
+            object[] callArgumentsWrapper = selectedNFTs
                         .Select(n => (object)n.id)
                         .ToArray();
 
@@ -50,7 +56,16 @@ namespace AbstractionServer
                             callArgumentsWrapper,
                             response =>
                             {
+                                
                                 Debug.Log("Run iniciada correctamente: " + response);
+                                GameData.SelectedNFTs = selectedNFTs;
+                                if (selectedNFTs.Count > 0)
+                                {
+                                    GameData.InitialWeaponName = selectedNFTs[0].name;
+                                    Debug.Log("Nombre del arma inicial: " + GameData.InitialWeaponName);
+                                    // GameData.InitialWeaponID = selectedNFTs[0].id;
+                                    // Debug.Log("ID del arma inicial: " + GameData.InitialWeaponID);
+                                }
                                 SceneManager.LoadScene(gameScene);
                             },
                             error =>

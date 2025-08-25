@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\PowerUp\PowerUpType.cs" />
     <Compile Include="Assets\AbstractionServer\NFTService.cs" />
     <Compile Include="Assets\UnityTechnologies\EffectExamples\Shared\Scripts\ParticleCollision.cs" />
+    <Compile Include="Assets\Scripts\NFTSpawner.cs" />
     <Compile Include="Assets\TeKniKo_Free\Power_Ups\Scripts\ObjectBounce.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Assets\Scripts\CameraPlayerThird.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
+    <Compile Include="Assets\Scripts\GameData.cs" />
     <Compile Include="Assets\Solodream\VFX_FireballPack\Scripts\FireballHorizontalMovement.cs" />
     <Compile Include="Assets\Scripts\Bow\LaunchArrow.cs" />
     <Compile Include="Assets\Scripts\CanvasScripts\MainMenu.cs" />

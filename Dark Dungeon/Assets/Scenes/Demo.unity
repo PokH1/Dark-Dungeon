@@ -4706,6 +4706,9 @@ MonoBehaviour:
   arrowUI: {fileID: 2135286403}
   bowPrefab: {fileID: 0}
   bowCrosshair: {fileID: 1522884898}
+  nftWeaponPrefabs:
+  - weaponName: Sword NFT Test1
+    prefab: {fileID: 4909334217645422199, guid: 2b98d3d32acd00c46aa13e6ff6ad538d, type: 3}
 --- !u!82 &374100071
 AudioSource:
   m_ObjectHideFlags: 0

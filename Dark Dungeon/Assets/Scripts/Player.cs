@@ -7,6 +7,8 @@ using TMPro;
 using System;
 using AbstractionServer;
 using System.Linq;
+using NFTType = AbstractionServer.NFT;
+
 
 
 [Serializable]
@@ -74,20 +76,48 @@ public class Player : MonoBehaviour
     private float survivalTime;
     // Lista temporal solo para los NFTs de esta run
     private List<ulong> itemsToSend = new List<ulong>();
+    // Lista de prefabs de armas NFT seleccionadas antes de iniciar la run
+    public List<NFTWeaponPrefab> nftWeaponPrefabs; // Aquí arrastras tus prefabs y les pones nombre
+
+
+    [System.Serializable]
+    public class NFTWeaponPrefab
+    {
+        public string weaponName;   // Nombre que coincide con el NFT
+        public GameObject prefab;   // Prefab real del arma
+    }
+
 
 
     void Start()
     {
         InitializePlayer();
-        InitializeWeapons();
+
+        // 1️⃣ Cargar armas de NFTs seleccionados si hay
+        if (GameData.SelectedNFTs != null && GameData.SelectedNFTs.Count > 0)
+        {
+            InitializeWeaponsFromSelectedNFTs();
+        }
+
+        // 2️⃣ Si no hay armas en el inventario, equipar el arma por defecto
+        if (weaponInventory.Count == 0)
+        {
+            InitializeWeapons(); // Este método equipará weaponPrefab o bowPrefab
+        }
+
+        // 3️⃣ Actualizar UI de armas
         UpdateWeaponUI(currentWeaponIndex);
 
+        // 4️⃣ Mostrar crosshair si el arma equipada es un arco
         if (bowCrosshair != null)
         {
             bowCrosshair.SetActive(IsUsingBow());
         }
-        StartRun(); // inicializamos tiempo de run
+
+        // 5️⃣ Iniciar datos de la run
+        StartRun();
     }
+
 
     private void InitializePlayer()
     {
@@ -109,6 +139,31 @@ public class Player : MonoBehaviour
 
         audioSource.volume = 20f;
     }
+
+private void InitializeWeaponsFromSelectedNFTs()
+{
+    weaponInventory.Clear();
+
+    foreach (var nft in GameData.SelectedNFTs)
+    {
+        // Buscar el prefab que coincida con el nombre del NFT
+        var prefabData = nftWeaponPrefabs.FirstOrDefault(p => p.weaponName == nft.name);
+        if (prefabData != null)
+        {
+            GameObject weapon = Instantiate(prefabData.prefab, weaponPoint);
+            weapon.SetActive(false);
+            weaponInventory.Add(weapon);
+        }
+    }
+
+    // Equipar la arma que coincide con el InitialWeaponName
+    var initialWeapon = weaponInventory.FirstOrDefault(w => w.name.Contains(GameData.InitialWeaponName));
+    if (initialWeapon != null)
+    {
+        currentWeaponIndex = weaponInventory.IndexOf(initialWeapon);
+        EquipWeaponByIndex(currentWeaponIndex);
+    }
+}
 
     private void InitializeWeapons()
     {

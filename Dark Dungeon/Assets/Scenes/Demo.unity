@@ -4707,8 +4707,12 @@ MonoBehaviour:
   bowPrefab: {fileID: 0}
   bowCrosshair: {fileID: 1522884898}
   nftWeaponPrefabs:
-  - weaponName: Sword NFT Test1
+  - weaponName: Sword-red-Test
     prefab: {fileID: 4909334217645422199, guid: 2b98d3d32acd00c46aa13e6ff6ad538d, type: 3}
+  - weaponName: HAMMER
+    prefab: {fileID: 5282661190385707016, guid: d7a55af0b7b4e1e4e8f173e55378e40d, type: 3}
+  - weaponName: SwordCrimson
+    prefab: {fileID: 7191709042515639891, guid: 01dd41a9b23460240b43f252c4e31ade, type: 3}
 --- !u!82 &374100071
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5686,7 +5690,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -75}
+  m_AnchoredPosition: {x: 0, y: -154}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &452584090
@@ -6263,7 +6267,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -221}
+  m_AnchoredPosition: {x: 0, y: -268}
   m_SizeDelta: {x: 600, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &499656113
@@ -6686,7 +6690,7 @@ RectTransform:
   m_GameObject: {fileID: 527759847}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0333, y: 1.075, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 364160472}
@@ -10922,7 +10926,7 @@ RectTransform:
   m_GameObject: {fileID: 821239228}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.225, y: 1.175, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 13731369}
@@ -13688,7 +13692,7 @@ RectTransform:
   m_GameObject: {fileID: 1021408675}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.075, y: 1.1284736, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1187010870}
@@ -16370,7 +16374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 258}
+  m_AnchoredPosition: {x: 0, y: 196}
   m_SizeDelta: {x: 1000, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1187010871
@@ -22822,8 +22826,10 @@ MonoBehaviour:
   bossAttack: {fileID: 0}
   deathAudioSource: {fileID: 1476753771}
   bossDrops:
-  - {fileID: 4674803751900717725, guid: 80df51575b47fdb46b01cff08d675126, type: 3}
-  dropChance: 1
+  - {fileID: 5282661190385707016, guid: d7a55af0b7b4e1e4e8f173e55378e40d, type: 3}
+  - {fileID: 7191709042515639891, guid: 01dd41a9b23460240b43f252c4e31ade, type: 3}
+  - {fileID: 4909334217645422199, guid: 2b98d3d32acd00c46aa13e6ff6ad538d, type: 3}
+  dropChance: 0.53
 --- !u!95 &1753086631
 Animator:
   serializedVersion: 7
@@ -26545,7 +26551,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2062423171
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26555,7 +26561,7 @@ RectTransform:
   m_GameObject: {fileID: 2062423170}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.4417, y: 1.5249, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 626854786}
@@ -28212,7 +28218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 751795344930279397, guid: e55107a54d1d03d438d9c9ff396f9101, type: 3}
       propertyPath: dropChance
-      value: 1
+      value: 0.53
       objectReference: {fileID: 0}
     - target: {fileID: 751795344930279397, guid: e55107a54d1d03d438d9c9ff396f9101, type: 3}
       propertyPath: healthSliderDragon
@@ -28220,7 +28226,7 @@ PrefabInstance:
       objectReference: {fileID: 531412705}
     - target: {fileID: 751795344930279397, guid: e55107a54d1d03d438d9c9ff396f9101, type: 3}
       propertyPath: bossDrops.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4728106589959199392, guid: e55107a54d1d03d438d9c9ff396f9101, type: 3}
       propertyPath: m_Name

@@ -152,10 +152,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac08672e6b90734abeb6e03c207957b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponName: 
   damage: 20
+  canDamage: 0
+  damageMultiplier: 1
   icon: {fileID: 21300000, guid: 3d971eacb3efd4b48b6312f02e34e843, type: 3}
   audioClip: {fileID: 8300000, guid: 13f428c2e9370e145be7497a8ed93ab8, type: 3}
   audioSource: {fileID: 1131192779675948697}
+  hammerRadius: 3
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  appliesDot: 0
+  dotDamage: 5
+  dotDuration: 5
+  lifestealPercent: 0.2
 --- !u!114 &2161216404140406575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemId: 1
+  isNFT: 0
   pickupUI: {fileID: 8077457300212555840}
   weaponPrefab: {fileID: 4674803751900717725}
   pickupSound: {fileID: 8300000, guid: a9ae55f881695c84aa220c0723913617, type: 3}
@@ -437,7 +449,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Presiona E para recoger
+  m_text: Press E to collect
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -29,6 +29,8 @@ public class EnemyHealth : MonoBehaviour
     public AudioClip idleGrowlSound;
     public AudioSource loopAudioSource;
     public AudioSource audioSource;
+    public int health = 100;
+    private bool isTakingDot = false;
 
     [Header("NFTs")]
     public GameObject[] nfts;
@@ -96,6 +98,27 @@ public class EnemyHealth : MonoBehaviour
         {
             Die();
         }
+    }
+
+        public void ApplyDamageOverTime(int damagePerSecond, float duration)
+    {
+        if (!isTakingDot) // evita acumular múltiples DOT al mismo tiempo
+            StartCoroutine(DamageOverTime(damagePerSecond, duration));
+    }
+
+    private System.Collections.IEnumerator DamageOverTime(int damagePerSecond, float duration)
+    {
+        isTakingDot = true;
+
+        float elapsed = 0f;
+        while (elapsed < duration && currentHealt > 0)
+        {
+            TakeDamage(damagePerSecond);
+            yield return new WaitForSeconds(1f); // daño cada segundo
+            elapsed += 1f;
+        }
+
+        isTakingDot = false;
     }
 
     void DropLoot()

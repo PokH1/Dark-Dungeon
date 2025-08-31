@@ -829,7 +829,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2127303835}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: SwitchPanels
+        m_MethodName: OnLoginButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3502,7 +3502,7 @@ RectTransform:
   m_GameObject: {fileID: 731918415}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.01, y: 1.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 464996080}
@@ -3898,7 +3898,7 @@ RectTransform:
   m_GameObject: {fileID: 900241005}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.01, y: 1.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1222320993}
@@ -5132,7 +5132,7 @@ RectTransform:
   m_GameObject: {fileID: 1258523692}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.125, y: 1.1666, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 167928191}
@@ -6499,7 +6499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1632945228
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7153,8 +7153,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Selecciona tus armas para entrar a la masmorra y aguantar lo m\xE1s que
-    puedas!!\n\n\n\nBuena suerte caballero!"
+  m_text: 'Select your weapons to enter the dark dungeon and hold out as long as
+    you can!!
+
+
+
+
+    Good luck, Knight.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3032c7eebdf6af744b7c355f941a6627, type: 2}
   m_sharedMaterial: {fileID: 727036983184156503, guid: 3032c7eebdf6af744b7c355f941a6627, type: 2}
@@ -8009,8 +8014,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loginData: {fileID: 11400000, guid: 055322fd6744b7148ad06e9ac35699bb, type: 2}
-  signup: {fileID: 1258523692}
-  mainMenu: {fileID: 900241005}
+  signupPanel: {fileID: 1258523692}
+  mainMenuPanel: {fileID: 900241005}
+  loginButton: {fileID: 167928194}
 --- !u!4 &2127303836
 Transform:
   m_ObjectHideFlags: 0

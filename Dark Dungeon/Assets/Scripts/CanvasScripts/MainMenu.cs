@@ -20,7 +20,7 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Debug.Log("Saliendo del juego");
-        // Application.Quit();
+        Application.Quit();
     }
 
         // Método para abrir el panel de NFTs

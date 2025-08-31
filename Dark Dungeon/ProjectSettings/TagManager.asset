@@ -9,6 +9,9 @@ TagManager:
   - Bow
   - Boss
   - Arrow
+  - Hammer
+  - SwordCrimson
+  - SwordRed
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - inOnGround
   - Structure
   - Arrow
-  - 
+  - Enemy
   - 
   - 
   - 

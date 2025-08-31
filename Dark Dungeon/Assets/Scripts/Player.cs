@@ -311,6 +311,12 @@ private void InitializeWeaponsFromSelectedNFTs()
         }
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        healthSlider.value = currentHealth;
+        Debug.Log($"Curado: {amount}, Vida actual: {currentHealth}");
+    }
 
     bool IsUsingBow()
     {

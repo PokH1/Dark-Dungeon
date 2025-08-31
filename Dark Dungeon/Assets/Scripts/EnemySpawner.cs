@@ -46,14 +46,37 @@ public class EnemySpawner : MonoBehaviour
 
             int enemiesSpawnedThisWave = 0;
 
-            // Invocar jefe SOLO en la segunda oleada
-            if (waveNumber == 2 && !bossSpawned)
+            // Invocar jefe CADA 5 rondas
+            if (waveNumber % 5 == 0)
             {
-                SpawnBoss();
+                // Spawnear jefe
+                Vector3 dragonPosition = new Vector3(0f, 0f, 0f); // 👈 cambia aquí la posición exacta
+                GameObject boss = SpawnBoss(dragonPosition);
+
+                // Obtener script Enemy o BossStats
+                BossHealth bossStats = boss.GetComponent<BossHealth>();
+                BossAttack bossStat = boss.GetComponent<BossAttack>();
+
+                if (bossStats != null)
+                {
+                    // Escalamos vida y daño
+                    int baseHealth = 100;   // vida base del dragón
+                    int baseDamage = 20;    // daño base del dragón
+
+                    int scale = waveNumber / 5; // 1 en wave 5, 2 en wave 10, etc.
+
+                    bossStats.maxHealt = baseHealth * scale;
+                    bossStats.currentHealt = bossStats.maxHealt;
+                    bossStat.damage = baseDamage * scale;
+
+                    Debug.Log($"🐉 Dragón spawneado - Vida: {bossStats.maxHealt}, Daño: {bossStat.damage}");
+                }
+
                 bossSpawned = true;
                 StartCoroutine(SpawnEnemiesWithBoss());
             }
 
+            // Spawneo normal de enemigos
             while (enemiesSpawnedThisWave < enemiesPerWave)
             {
                 if (currentEnemies.Count < maxEnemies)
@@ -72,6 +95,7 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(tiemBetweenWaves);
         }
     }
+
 
     void SpawnEnemy()
     {
@@ -118,31 +142,25 @@ public class EnemySpawner : MonoBehaviour
        }
     }
 
-    void SpawnBoss()
+    GameObject SpawnBoss(Vector3 customPosition)
     {
-        int randomIndex = Random.Range(0, spawnPoints.Length);
-        Transform spawnPoint = spawnPoints[randomIndex];
-
-        Vector3 spawnPosition = spawnPoint.position;
-
-        if (Physics.Raycast(spawnPoint.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f))
-        {
-            spawnPosition = hit.point;
-        }
-
-        GameObject bossSpawn = Instantiate(boss, spawnPosition, Quaternion.identity);
+        // Instanciamos el boss en la posición exacta
+        GameObject bossSpawn = Instantiate(boss, customPosition, Quaternion.identity);
         currentEnemies.Add(bossSpawn);
 
         bossSpawn.SetActive(true);
 
-        Debug.Log("⚠️ Jefe (Dragón) Invocado en la Oleada 2!");
+        Debug.Log("⚠️ Jefe (Dragón) Invocado en la posición: " + customPosition);
 
+        // Música
         if (backgroundMusic != null)
             backgroundMusic.Stop();
-
         if (bossMusic != null)
             bossMusic.Play();
+
+        return bossSpawn;
     }
+
 
     IEnumerator SpawnEnemiesWithBoss()
     {

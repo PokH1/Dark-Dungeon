@@ -46,10 +46,10 @@ namespace AbstractionServer
                 Debug.Log("NFT ID: " + nft.id + " | Name: " + nft.name);
             }
 
-            object[] callArgumentsWrapper = selectedNFTs
-                        .Select(n => (object)n.id)
-                        .ToArray();
-
+            object[] callArgumentsWrapper = new object[]
+            {
+                selectedNFTs.Select(n => (object)n.id).ToArray()
+            };
                     StartCoroutine(
                         AbstractionApiClient.PostArray(
                             "/service/command/startrun",
